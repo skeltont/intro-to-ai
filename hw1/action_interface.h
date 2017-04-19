@@ -49,7 +49,8 @@ bool check_action_2 (struct bank *boat_bank, struct bank *far_bank) {
     that we can have the missionaries and cannibals available for taking
 */
 bool check_action_3 (struct bank *boat_bank, struct bank *far_bank) {
-  if (boat_bank->missionaries > 0 && boat_bank->cannibals > 0) {
+  if (boat_bank->missionaries > 0 && boat_bank->cannibals > 0
+      && far_bank->missionaries + 1 >= far_bank->cannibals + 1) {
     return true;
   }
   return false;
