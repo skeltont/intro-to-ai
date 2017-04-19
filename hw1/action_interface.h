@@ -49,7 +49,7 @@ bool check_action_2 (struct bank *boat_bank, struct bank *far_bank) {
     that we can have the missionaries and cannibals available for taking
 */
 bool check_action_3 (struct bank *boat_bank, struct bank *far_bank) {
-  if (boat_bank->missionaries > 0 && boat_bank->cannibals > 0 && boat_bank->missionaries == boat_bank->cannibals) {
+  if (boat_bank->missionaries > 0 && boat_bank->cannibals > 0) {
     return true;
   }
   return false;
@@ -175,7 +175,7 @@ bool take_action (struct monitor *m, struct successor *succ, int action) {
     succ->children[action]->parent = succ;
 
     if (m->states_size + 1 == m->states_cap)
-      m->states_cap = increase_states_size(m);
+      m->states_cap = increase_states_cap(m);
 
     m->states[m->states_size] = *succ->children[action]->s;
     m->states_size += 1;

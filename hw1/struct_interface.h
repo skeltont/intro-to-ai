@@ -17,7 +17,7 @@ struct monitor {
   struct successor *goal_node;
   struct state *start;
   struct state *goal;
-  int counter;
+  int result;
 
   int queue_size;
   int queue_cap;
@@ -107,7 +107,7 @@ void print_successor_path(struct successor *root, struct successor *curr) {
   debug_state(curr->s);
 }
 
-int increase_queue_size (struct successor *queue, int size) {
+int increase_queue_cap (struct successor *queue, int size) {
   printf(KYEL "increasing queue size." RESET "\n");
   struct successor *new_queue;
   const int queue_size = size * 2;
@@ -143,7 +143,7 @@ void init_monitor (struct monitor *new_monitor) {
   new_monitor->start = create_state();
   new_monitor->goal = create_state();
 
-  new_monitor->counter = 0;
+  new_monitor->result = 0;
 
   new_monitor->queue_size = 0;
   new_monitor->queue_cap = INIT_SIZE;
@@ -154,7 +154,7 @@ void init_monitor (struct monitor *new_monitor) {
   new_monitor->states = malloc(sizeof(struct state) * INIT_SIZE);
 }
 
-int increase_states_size (struct monitor *m) {
+int increase_states_cap (struct monitor *m) {
   printf(KYEL "increasing states size" RESET "\n");
   struct state *states;
   const int states_cap = m->states_cap * 2;

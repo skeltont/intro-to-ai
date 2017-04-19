@@ -4,7 +4,7 @@
 * Build
   * `make`
 * Run
-  * `make test1dfs` or
+  * `make run s=1 m=dfs o=output.txt` or
   * `./hw test_data/start1.txt test_data/goal1.txt dfs output.txt`
 * Clean
   * `make clean`

@@ -27,7 +27,7 @@ void load_test_data (const char *filename, struct state *s) {
   }
 }
 
-void bfs (struct monitor *m, int counter) {
+void bfs (struct monitor *m) {
   struct bank *boat_bank, *far_bank;
   int queue_size = m->queue_size;
   struct successor *new_queue;
@@ -48,12 +48,9 @@ void bfs (struct monitor *m, int counter) {
     for (int j = 0; j < 5; j++) {
       if (check_action(j, boat_bank, far_bank)) {
         if (take_action(m, &m->queue[i], j)) {
-          counter += 1;
-
-          debug_state(m->queue[i].children[j]->s);
 
           if (m->queue_size + 1 == m->queue_cap)
-            m->queue_cap = increase_queue_size(new_queue, m->queue_cap);
+            m->queue_cap = increase_queue_cap(new_queue, m->queue_cap);
 
           new_queue[m->queue_size] = *m->queue[i].children[j];
           m->queue_size += 1;
@@ -61,7 +58,7 @@ void bfs (struct monitor *m, int counter) {
           if (compare_states(m->goal, m->queue[i].children[j]->s)) {
             printf("found solution!\n");
             m->goal_node = m->queue[i].children[j];
-            m->counter = counter - 1;
+            m->result = m->states_size - 1;
           }
         }
       }
@@ -71,12 +68,12 @@ void bfs (struct monitor *m, int counter) {
   m->queue = new_queue;
 
   if (m->queue_size > 0)
-    bfs(m, counter);
+    bfs(m);
   else
     return;
 }
 
-void dfs (struct monitor *m, struct successor *succ, int counter) {
+void dfs (struct monitor *m, struct successor *succ) {
   struct bank *boat_bank, *far_bank;
 
   if (succ->s->left->boat == 1) {
@@ -90,13 +87,12 @@ void dfs (struct monitor *m, struct successor *succ, int counter) {
   for (int i = 0; i < 5; i++) {
     if (check_action(i, boat_bank, far_bank)) {
       if (take_action(m, succ, i)) {
-        counter += 1;
         if (compare_states(m->goal, succ->children[i]->s)) {
           printf("found solution!\n");
           m->goal_node = succ->children[i];
-          m->counter = counter - 1;
+          m->result = m->states_size - 1;
         }
-        dfs(m, succ->children[i], counter);
+        dfs(m, succ->children[i]);
       }
     }
   }
@@ -104,9 +100,9 @@ void dfs (struct monitor *m, struct successor *succ, int counter) {
 
 void handle_mode (struct monitor *m, const char *mode) {
   if (strncmp("bfs", mode, strlen(mode)) == 0)
-    bfs(m, -1);
+    bfs(m);
   else if (strncmp("dfs", mode, strlen(mode)) == 0)
-    dfs(m, m->tree_head, -1);
+    dfs(m, m->tree_head);
   else if (strncmp("iddfs", mode, strlen(mode)) == 0)
     printf("iddfs called \n");
   else if (strncmp("astar", mode, strlen(mode)) == 0)
@@ -143,11 +139,11 @@ int main (int argc, char const *argv[]) {
 
   handle_mode(m, argv[3]);
 
-  if (m->counter == 0) {
+  if (m->result == 0) {
     printf("no solution found\n");
   } else {
     print_successor_path(m->tree_head, m->goal_node);
-    printf("completed search via %s number of expansions: %d\n", argv[3], m->counter);
+    printf("completed search via %s number of expansions: %d\n", argv[3], m->result);
   }
 
   return 0;
