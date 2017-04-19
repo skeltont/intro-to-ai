@@ -10,7 +10,7 @@
 #define KYEL    "\x1B[33m"
 #define RESET   "\033[0m"
 
-#define INIT_STATES_SIZE 50
+#define INIT_SIZE 50
 
 struct monitor {
   struct successor *tree_head;
@@ -18,14 +18,20 @@ struct monitor {
   struct state *start;
   struct state *goal;
   int counter;
+
+  int queue_size;
+  int queue_cap;
+  struct successor *queue;
+
   int states_size;
+  int states_cap;
   struct state *states;
 };
 
 struct successor {
   struct state *s;
   struct successor *parent;
-  struct successor *children[6];
+  struct successor *children[5];
 };
 
 struct state {
@@ -95,11 +101,27 @@ bool compare_states (struct state *s1, struct state *s2) {
 }
 
 void print_successor_path(struct successor *root, struct successor *curr) {
-  if (curr != root) {
+  if (curr->s != root->s) {
     print_successor_path(root, curr->parent);
   }
   debug_state(curr->s);
-  return;
+}
+
+int increase_queue_size (struct successor *queue, int size) {
+  printf(KYEL "increasing queue size." RESET "\n");
+  struct successor *new_queue;
+  const int queue_size = size * 2;
+  new_queue = malloc(sizeof(struct successor) * queue_size);
+  memset(new_queue, 0, sizeof(struct successor) * queue_size);
+
+  for (int i = 0; i < size; i++) {
+    new_queue[i] = queue[i];
+    debug_state(new_queue[i].s);
+  }
+
+  queue = new_queue;
+
+  return queue_size;
 }
 
 void init_successor (struct successor *new_successor) {
@@ -120,16 +142,24 @@ void init_monitor (struct monitor *new_monitor) {
   new_monitor->tree_head = create_successor();
   new_monitor->start = create_state();
   new_monitor->goal = create_state();
+
   new_monitor->counter = 0;
+
+  new_monitor->queue_size = 0;
+  new_monitor->queue_cap = INIT_SIZE;
+  new_monitor->queue = malloc(sizeof(struct successor) * INIT_SIZE);
+
   new_monitor->states_size = 0;
-  new_monitor->states = malloc(sizeof(struct state) * INIT_STATES_SIZE);
+  new_monitor->states_cap = INIT_SIZE;
+  new_monitor->states = malloc(sizeof(struct state) * INIT_SIZE);
 }
 
-void increase_monitor_states (struct monitor *m) {
+int increase_states_size (struct monitor *m) {
+  printf(KYEL "increasing states size" RESET "\n");
   struct state *states;
-  const int states_size = m->states_size * 2;
-  states = malloc(sizeof(struct state) * states_size);
-  memset(states, 0, sizeof(struct state) * states_size);
+  const int states_cap = m->states_cap * 2;
+  states = malloc(sizeof(struct state) * states_cap);
+  memset(states, 0, sizeof(struct state) * states_cap);
 
   for (int i = 0; i < m->states_size; i++) {
     states[i] = m->states[i];
@@ -137,8 +167,8 @@ void increase_monitor_states (struct monitor *m) {
 
   free(m->states);
 
-  m->states_size = states_size;
   m->states = states;
+  return states_cap;
 }
 
 struct state *check_monitor_states(struct monitor *m, struct state *s) {
@@ -149,33 +179,4 @@ struct state *check_monitor_states(struct monitor *m, struct state *s) {
   }
 
   return NULL;
-}
-
-// void print_successor_path (struct monitor *m) {
-//   struct successor *curr = m->goal_node;
-//
-//   // while (curr != m->tree_head) {
-//   //   debug_state(curr->s);
-//   //   curr = curr->parent;
-//   // }
-// }
-
-void debug_monitor (struct monitor *m) {
-  printf(KYEL
-    "Current State: \n"
-    "Left:\tm:%d\tc:%d\tb:%d\n"
-    "Right:\tm:%d\tc:%d\tb:%d\n" RESET "\n",
-    m->start->left->missionaries, m->start->left->cannibals, m->start->left->boat,
-    m->start->right->missionaries, m->start->right->cannibals, m->start->right->boat
-  );
-
-  printf(KGRN
-    "Goal State: \n"
-    "Left:\tm:%d\tc:%d\tb:%d\n"
-    "Right:\tm:%d\tc:%d\tb:%d\n" RESET "\n",
-    m->goal->left->missionaries, m->goal->left->cannibals, m->goal->left->boat,
-    m->goal->right->missionaries, m->goal->right->cannibals, m->goal->right->boat
-  );
-
-  printf("Counter: %d \n", m->counter);
 }
