@@ -5,6 +5,6 @@
   * `make`
 * Run
   * `make test1dfs` or
-  * `./hw testStart1.txt testGoal1.txt dfs output.txt`
+  * `./hw test_data/start1.txt test_data/goal1.txt dfs output.txt`
 * Clean
   * `make clean`

@@ -7,14 +7,14 @@ clean:
 tar:
 	tar cvjf cs331_assignment_1_skeltont.tar.bz2 hw.c makefile
 test1dfs:
-	./hw start1.txt goal1.txt dfs output.txt
+	./hw test_data/start1.txt test_data/goal1.txt dfs output.txt
 test1bfs:
-	./hw start1.txt goal1.txt bfs output.txt
+	./hw test_data/start1.txt test_data/goal1.txt bfs output.txt
 test2dfs:
-	./hw start2.txt goal2.txt dfs output.txt
+	./hw test_data/start2.txt test_data/goal2.txt dfs output.txt
 test2bfs:
-	./hw start2.txt goal2.txt bfs output.txt
+	./hw test_data/start2.txt test_data/goal2.txt bfs output.txt
 test3dfs:
-	./hw start3.txt goal3.txt dfs output.txt
+	./hw test_data/start3.txt test_data/goal3.txt dfs output.txt
 test3bfs:
-	./hw start3.txt goal3.txt bfs output.txt
+	./hw test_data/start3.txt test_data/goal3.txt bfs output.txt
