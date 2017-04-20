@@ -11,6 +11,7 @@
 #define RESET   "\033[0m"
 
 #define INIT_SIZE 50
+#define BOAT_CAP 2
 
 struct monitor {
   struct successor *tree_head;
@@ -24,9 +25,19 @@ struct monitor {
   int queue_cap;
   struct successor *queue;
 
+  struct priority_queue *p_queue_head;
+  int p_queue_size;
+
   int states_size;
   int states_cap;
   struct state *states;
+};
+
+struct priority_queue {
+  struct successor *node;
+  float weight;
+  struct priority_queue *prev;
+  struct priority_queue *next;
 };
 
 struct successor {
@@ -58,6 +69,16 @@ struct bank *create_bank () {
     init_bank(new_bank);
     return new_bank;
 }
+
+// void set_banks (struct state *s, struct bank *boat_bank, struct bank *far_bank) {
+//   if (s->left->boat == 1) {
+//     boat_bank = s->left;
+//     far_bank = s->right;
+//   } else {
+//     boat_bank = s->right;
+//     far_bank = s->left;
+//   }
+// }
 
 void init_state (struct state *new_state) {
   new_state->left = create_bank();
@@ -102,11 +123,12 @@ bool compare_states (struct state *s1, struct state *s2) {
   return true;
 }
 
-void print_successor_path(struct successor *root, struct successor *curr) {
+int print_successor_path(struct successor *root, struct successor *curr, int path_length) {
   if (curr->s != root->s) {
-    print_successor_path(root, curr->parent);
+    path_length = print_successor_path(root, curr->parent, ++path_length);
   }
   debug_state(curr->s);
+  return path_length;
 }
 
 int increase_queue_cap (struct successor *queue, int size) {
@@ -140,6 +162,80 @@ struct successor *create_successor () {
   return new_successor;
 }
 
+void init_priority_queue(struct priority_queue *p) {
+  p->node = create_successor();
+  p->weight = 0.0;
+  p->prev = NULL;
+  p->next = NULL;
+}
+
+
+float calculate_objective_weight (struct state *s) {
+  float value;
+
+  value = (s->right->missionaries + s->right->cannibals) / BOAT_CAP;
+
+  return value;
+}
+
+struct priority_queue *create_priority_queue() {
+  struct priority_queue *new_priority_queue = malloc(sizeof(struct priority_queue));
+  init_priority_queue(new_priority_queue);
+  return new_priority_queue;
+}
+
+void add_to_priority_queue (struct monitor *m, struct successor *node) {
+  struct priority_queue *curr, *pq;
+
+  curr = m->p_queue_head;
+  pq = create_priority_queue();
+  pq->node = node;
+  pq->weight = calculate_objective_weight(node->s);
+
+  if (m->queue_size == 0)
+    m->p_queue_head = pq;
+  else
+    while (curr != NULL) {
+      if (pq->weight <= curr->weight) {
+        pq->next = curr;
+        pq->prev = curr->prev;
+        curr->prev = pq;
+
+        if (pq->prev == NULL) {
+          m->p_queue_head = pq;
+        } else
+          pq->prev->next = pq;
+
+        break;
+      } else if (pq->weight > curr->weight && curr->next == NULL) {
+        pq->prev = curr;
+        pq->next = curr->next;
+        curr->next = pq;
+
+        break;
+      }
+
+      curr = curr->next;
+    }
+
+  m->p_queue_size += 1;
+}
+
+void remove_from_priority_queue (struct monitor *m, struct priority_queue *pq) {
+  if (pq->prev != NULL)
+    pq->prev->next = pq->next;
+  if (pq->next != NULL)
+    pq->next->prev = pq->prev;
+
+  // free(pq);
+
+  if (pq->prev == NULL)
+    m->p_queue_head = pq->next;
+
+  m->p_queue_size -= 1;
+  printf("removed node: %d\n", m->p_queue_size);
+}
+
 void init_monitor (struct monitor *new_monitor) {
   new_monitor->tree_head = create_successor();
   new_monitor->start = create_state();
@@ -151,6 +247,9 @@ void init_monitor (struct monitor *new_monitor) {
   new_monitor->queue_size = 0;
   new_monitor->queue_cap = INIT_SIZE;
   new_monitor->queue = malloc(sizeof(struct successor) * INIT_SIZE);
+
+  new_monitor->p_queue_head = create_priority_queue();
+  new_monitor->p_queue_size = 0;
 
   new_monitor->states_size = 0;
   new_monitor->states_cap = INIT_SIZE;

@@ -139,6 +139,42 @@ bool iddfs (struct monitor *m, struct successor *succ, int limit) {
   return false;
 }
 
+void astar (struct monitor *m, struct priority_queue *curr) {
+  struct bank *boat_bank, *far_bank;
+
+  if (m->found_result)
+    return;
+
+  if (curr->node->s->left->boat == 1) {
+    boat_bank = curr->node->s->left;
+    far_bank = curr->node->s->right;
+  } else {
+    boat_bank = curr->node->s->right;
+    far_bank = curr->node->s->left;
+  }
+
+  for (int j = 0; j < 5; j++) {
+    if (check_action(j, boat_bank, far_bank)) {
+      if (take_action(m, curr->node, j)) {
+        add_to_priority_queue(m, curr->node->children[j]);
+        if (compare_states(m->goal, curr->node->children[j]->s)) {
+          printf("found solution!\n");
+          m->found_result = true;
+          m->goal_node = curr->node->children[j];
+          m->result = m->states_size - 1;
+          return;
+        }
+      }
+    }
+  }
+
+  remove_from_priority_queue(m, curr);
+
+  astar(m, m->p_queue_head);
+
+  return;
+}
+
 void handle_mode (struct monitor *m, const char *mode) {
   if (strncmp("bfs", mode, strlen(mode)) == 0)
     bfs(m);
@@ -157,13 +193,14 @@ void handle_mode (struct monitor *m, const char *mode) {
       m->states_size = 1;
     }
   else if (strncmp("astar", mode, strlen(mode)) == 0)
-    printf("astar called \n");
+    astar(m, m->p_queue_head);
   else
     printf("unknown mode requested \n");
 }
 
 int main (int argc, char const *argv[]) {
   struct monitor *m = malloc(sizeof(struct monitor));
+  int path_length = 0;
 
   init_monitor(m);
 
@@ -179,6 +216,10 @@ int main (int argc, char const *argv[]) {
 
     m->queue[m->queue_size] = *m->tree_head;
     m->queue_size += 1;
+
+    m->p_queue_head->node = m->tree_head;
+    m->p_queue_size += 1;
+
   } else {
     printf(KRED "Invalid number of arguments. %d provided and 4 required." RESET "\n\n"
       "Structure:\n"
@@ -193,8 +234,8 @@ int main (int argc, char const *argv[]) {
   if (m->result == 0) {
     printf("no solution found\n");
   } else {
-    print_successor_path(m->tree_head, m->goal_node);
-    printf("completed search via %s number of expansions: %d\n", argv[3], m->result);
+    path_length = print_successor_path(m->tree_head, m->goal_node, 0);
+    printf("completed search via %s with path length: %d and a number of expansions: %d\n", argv[3], path_length, m->result);
   }
 
   return 0;
