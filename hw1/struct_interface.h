@@ -17,6 +17,7 @@ struct monitor {
   struct successor *goal_node;
   struct state *start;
   struct state *goal;
+  bool found_result;
   int result;
 
   int queue_size;
@@ -32,6 +33,7 @@ struct successor {
   struct state *s;
   struct successor *parent;
   struct successor *children[5];
+  int depth;
 };
 
 struct state {
@@ -108,7 +110,7 @@ void print_successor_path(struct successor *root, struct successor *curr) {
 }
 
 int increase_queue_cap (struct successor *queue, int size) {
-  printf(KYEL "increasing queue size." RESET "\n");
+  // printf(KYEL "increasing queue size." RESET "\n");
   struct successor *new_queue;
   const int queue_size = size * 2;
   new_queue = malloc(sizeof(struct successor) * queue_size);
@@ -116,7 +118,6 @@ int increase_queue_cap (struct successor *queue, int size) {
 
   for (int i = 0; i < size; i++) {
     new_queue[i] = queue[i];
-    debug_state(new_queue[i].s);
   }
 
   queue = new_queue;
@@ -130,6 +131,7 @@ void init_successor (struct successor *new_successor) {
   for (int i = 0; i < 5; i++) {
     new_successor->children[i] = NULL;
   }
+  new_successor->depth = 0;
 }
 
 struct successor *create_successor () {
@@ -143,6 +145,7 @@ void init_monitor (struct monitor *new_monitor) {
   new_monitor->start = create_state();
   new_monitor->goal = create_state();
 
+  new_monitor->found_result = false;
   new_monitor->result = 0;
 
   new_monitor->queue_size = 0;
@@ -155,7 +158,7 @@ void init_monitor (struct monitor *new_monitor) {
 }
 
 int increase_states_cap (struct monitor *m) {
-  printf(KYEL "increasing states size" RESET "\n");
+  // printf(KYEL "increasing states size" RESET "\n");
   struct state *states;
   const int states_cap = m->states_cap * 2;
   states = malloc(sizeof(struct state) * states_cap);
@@ -165,10 +168,15 @@ int increase_states_cap (struct monitor *m) {
     states[i] = m->states[i];
   }
 
-  free(m->states);
+  // free(m->states);
 
   m->states = states;
   return states_cap;
+}
+
+void clear_states (struct monitor *m) {
+  memset(m->states, 0, sizeof(struct state) * m->states_cap);
+  m->states_size = 0;
 }
 
 struct state *check_monitor_states(struct monitor *m, struct state *s) {

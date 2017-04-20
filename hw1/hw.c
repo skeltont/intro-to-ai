@@ -32,6 +32,9 @@ void bfs (struct monitor *m) {
   int queue_size = m->queue_size;
   struct successor *new_queue;
 
+  if (m->found_result)
+    return;
+
   new_queue = malloc(sizeof(struct successor) * m->queue_cap);
   m->queue_size = 0;
 
@@ -57,6 +60,7 @@ void bfs (struct monitor *m) {
 
           if (compare_states(m->goal, m->queue[i].children[j]->s)) {
             printf("found solution!\n");
+            m->found_result = true;
             m->goal_node = m->queue[i].children[j];
             m->result = m->states_size - 1;
           }
@@ -76,6 +80,9 @@ void bfs (struct monitor *m) {
 void dfs (struct monitor *m, struct successor *succ) {
   struct bank *boat_bank, *far_bank;
 
+  if (m->found_result)
+    return;
+
   if (succ->s->left->boat == 1) {
     boat_bank = succ->s->left;
     far_bank = succ->s->right;
@@ -89,6 +96,7 @@ void dfs (struct monitor *m, struct successor *succ) {
       if (take_action(m, succ, i)) {
         if (compare_states(m->goal, succ->children[i]->s)) {
           printf("found solution!\n");
+          m->found_result = true;
           m->goal_node = succ->children[i];
           m->result = m->states_size - 1;
         }
@@ -98,13 +106,56 @@ void dfs (struct monitor *m, struct successor *succ) {
   }
 }
 
+bool iddfs (struct monitor *m, struct successor *succ, int limit) {
+  struct bank *boat_bank, *far_bank;
+
+  if (m->found_result)
+    return true;
+
+  if (succ->s->left->boat == 1) {
+    boat_bank = succ->s->left;
+    far_bank = succ->s->right;
+  } else {
+    boat_bank = succ->s->right;
+    far_bank = succ->s->left;
+  }
+
+  for (int i = 0; i < 5; i++) {
+    if (check_action(i, boat_bank, far_bank) && succ->depth +1 <= limit) {
+      if (take_action(m, succ, i)) {
+        succ->children[i]->depth = succ->depth + 1;
+        if (compare_states(m->goal, succ->children[i]->s)) {
+          printf("found solution!\n");
+          m->found_result = true;
+          m->goal_node = succ->children[i];
+          m->result = m->states_size - 1;
+          return true;
+        }
+        iddfs(m, succ->children[i], limit);
+      }
+    }
+  }
+
+  return false;
+}
+
 void handle_mode (struct monitor *m, const char *mode) {
   if (strncmp("bfs", mode, strlen(mode)) == 0)
     bfs(m);
   else if (strncmp("dfs", mode, strlen(mode)) == 0)
     dfs(m, m->tree_head);
   else if (strncmp("iddfs", mode, strlen(mode)) == 0)
-    printf("iddfs called \n");
+    for (size_t i = 0; ; i++) {
+      m->tree_head = create_successor();
+      m->tree_head->s = m->start;
+
+      if (iddfs(m, m->tree_head, i))
+        break;
+
+      clear_states(m);
+      m->states[m->states_size] = *m->start;
+      m->states_size = 1;
+    }
   else if (strncmp("astar", mode, strlen(mode)) == 0)
     printf("astar called \n");
   else
@@ -124,8 +175,8 @@ int main (int argc, char const *argv[]) {
     m->states_size += 1;
 
     m->tree_head->s = m->start;
+    m->tree_head->depth = 0;
 
-    printf("queue_size: %d\n", m->queue_size);
     m->queue[m->queue_size] = *m->tree_head;
     m->queue_size += 1;
   } else {
