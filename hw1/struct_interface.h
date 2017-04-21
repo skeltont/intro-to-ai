@@ -87,11 +87,11 @@ void init_state (struct state *new_state) {
   new_state->node = NULL;
 }
 
-void debug_state (struct state *s) {
-  printf(KGRN
+void debug_state (FILE *f, struct state *s) {
+  fprintf(f,
     "State: \n"
     "Left:\tm:%d\tc:%d\tb:%d\n"
-    "Right:\tm:%d\tc:%d\tb:%d\n" RESET "\n",
+    "Right:\tm:%d\tc:%d\tb:%d\n" "\n",
     s->left->missionaries, s->left->cannibals, s->left->boat,
     s->right->missionaries, s->right->cannibals, s->right->boat
   );
@@ -125,11 +125,11 @@ bool compare_states (struct state *s1, struct state *s2) {
   return true;
 }
 
-int print_successor_path(struct successor *root, struct successor *curr, int path_length) {
+int print_successor_path(FILE *f, struct successor *root, struct successor *curr, int path_length) {
   if (curr->s != root->s) {
-    path_length = print_successor_path(root, curr->parent, ++path_length);
+    path_length = print_successor_path(f, root, curr->parent, ++path_length);
   }
-  debug_state(curr->s);
+  debug_state(f, curr->s);
   return path_length;
 }
 

@@ -184,8 +184,6 @@ bool take_action (struct monitor *m, struct successor *succ, int action) {
 
     return true;
   } else {
-    if (compare_states(m->goal, s))
-      printf("found result %d\n", succ->depth);
     // printf(KRED "deadend: %s" RESET "\n", message);
     succ->children[action]->s = s;
 

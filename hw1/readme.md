@@ -5,7 +5,7 @@
   * `make`
 * Run
   * `make run s=1 m=dfs o=output.txt` or
-  * `./hw test_data/start1.txt test_data/goal1.txt dfs output.txt`
+  * `./hw test_data/start1.txt test_data/goal1.txt dfs output/output1.txt`
 * Clean
   * `make clean`
 

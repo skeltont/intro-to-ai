@@ -202,10 +202,12 @@ void handle_mode (struct monitor *m, const char *mode) {
 int main (int argc, char const *argv[]) {
   struct monitor *m = malloc(sizeof(struct monitor));
   int path_length = 0;
+  FILE *f;
 
   init_monitor(m);
 
   if (argc == 5) {
+    f = fopen(argv[4], "w");
     load_test_data(argv[1], m->start);
     load_test_data(argv[2], m->goal);
 
@@ -224,7 +226,7 @@ int main (int argc, char const *argv[]) {
   } else {
     printf(KRED "Invalid number of arguments. %d provided and 4 required." RESET "\n\n"
       "Structure:\n"
-      "\t`./hw <initial state file> <goal state file> <mode> <output file>` \n"
+      "\t`./hw <initial state file> <goal state file> <mode> output/<output file>` \n"
       , argc - 1);
 
     return 0;
@@ -235,8 +237,8 @@ int main (int argc, char const *argv[]) {
   if (m->result == 0) {
     printf("no solution found\n");
   } else {
-    path_length = print_successor_path(m->tree_head, m->goal_node, 0);
-    printf("completed search via %s with path length: %d and a number of expansions: %d\n", argv[3], path_length, m->result);
+    path_length = print_successor_path(f, m->tree_head, m->goal_node, 0);
+    fprintf(f,"completed search via %s with path length: %d and a number of expansions: %d\n", argv[3], path_length, m->result);
   }
 
   return 0;
