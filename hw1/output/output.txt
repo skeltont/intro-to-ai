@@ -1,0 +1,177 @@
+State: 
+Left:	m:0	c:0	b:0
+Right:	m:10	c:8	b:1
+
+State: 
+Left:	m:2	c:0	b:1
+Right:	m:8	c:8	b:0
+
+State: 
+Left:	m:1	c:0	b:0
+Right:	m:9	c:8	b:1
+
+State: 
+Left:	m:1	c:1	b:1
+Right:	m:9	c:7	b:0
+
+State: 
+Left:	m:0	c:1	b:0
+Right:	m:10	c:7	b:1
+
+State: 
+Left:	m:2	c:1	b:1
+Right:	m:8	c:7	b:0
+
+State: 
+Left:	m:1	c:1	b:0
+Right:	m:9	c:7	b:1
+
+State: 
+Left:	m:3	c:1	b:1
+Right:	m:7	c:7	b:0
+
+State: 
+Left:	m:2	c:1	b:0
+Right:	m:8	c:7	b:1
+
+State: 
+Left:	m:2	c:2	b:1
+Right:	m:8	c:6	b:0
+
+State: 
+Left:	m:0	c:2	b:0
+Right:	m:10	c:6	b:1
+
+State: 
+Left:	m:0	c:4	b:1
+Right:	m:10	c:4	b:0
+
+State: 
+Left:	m:0	c:3	b:0
+Right:	m:10	c:5	b:1
+
+State: 
+Left:	m:2	c:3	b:1
+Right:	m:8	c:5	b:0
+
+State: 
+Left:	m:2	c:2	b:0
+Right:	m:8	c:6	b:1
+
+State: 
+Left:	m:3	c:2	b:1
+Right:	m:7	c:6	b:0
+
+State: 
+Left:	m:3	c:1	b:0
+Right:	m:7	c:7	b:1
+
+State: 
+Left:	m:4	c:2	b:1
+Right:	m:6	c:6	b:0
+
+State: 
+Left:	m:3	c:2	b:0
+Right:	m:7	c:6	b:1
+
+State: 
+Left:	m:4	c:3	b:1
+Right:	m:6	c:5	b:0
+
+State: 
+Left:	m:3	c:3	b:0
+Right:	m:7	c:5	b:1
+
+State: 
+Left:	m:5	c:3	b:1
+Right:	m:5	c:5	b:0
+
+State: 
+Left:	m:4	c:3	b:0
+Right:	m:6	c:5	b:1
+
+State: 
+Left:	m:5	c:4	b:1
+Right:	m:5	c:4	b:0
+
+State: 
+Left:	m:4	c:4	b:0
+Right:	m:6	c:4	b:1
+
+State: 
+Left:	m:6	c:4	b:1
+Right:	m:4	c:4	b:0
+
+State: 
+Left:	m:5	c:4	b:0
+Right:	m:5	c:4	b:1
+
+State: 
+Left:	m:6	c:5	b:1
+Right:	m:4	c:3	b:0
+
+State: 
+Left:	m:5	c:5	b:0
+Right:	m:5	c:3	b:1
+
+State: 
+Left:	m:7	c:5	b:1
+Right:	m:3	c:3	b:0
+
+State: 
+Left:	m:6	c:5	b:0
+Right:	m:4	c:3	b:1
+
+State: 
+Left:	m:7	c:6	b:1
+Right:	m:3	c:2	b:0
+
+State: 
+Left:	m:6	c:6	b:0
+Right:	m:4	c:2	b:1
+
+State: 
+Left:	m:8	c:6	b:1
+Right:	m:2	c:2	b:0
+
+State: 
+Left:	m:7	c:6	b:0
+Right:	m:3	c:2	b:1
+
+State: 
+Left:	m:8	c:7	b:1
+Right:	m:2	c:1	b:0
+
+State: 
+Left:	m:7	c:7	b:0
+Right:	m:3	c:1	b:1
+
+State: 
+Left:	m:9	c:7	b:1
+Right:	m:1	c:1	b:0
+
+State: 
+Left:	m:8	c:7	b:0
+Right:	m:2	c:1	b:1
+
+State: 
+Left:	m:10	c:7	b:1
+Right:	m:0	c:1	b:0
+
+State: 
+Left:	m:9	c:7	b:0
+Right:	m:1	c:1	b:1
+
+State: 
+Left:	m:9	c:8	b:1
+Right:	m:1	c:0	b:0
+
+State: 
+Left:	m:8	c:8	b:0
+Right:	m:2	c:0	b:1
+
+State: 
+Left:	m:10	c:8	b:1
+Right:	m:0	c:0	b:0
+
+completed search via dfs with path length: 43 and a number of expansions: 54
