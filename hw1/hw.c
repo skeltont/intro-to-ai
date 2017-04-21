@@ -121,11 +121,11 @@ bool iddfs (struct monitor *m, struct successor *succ, int limit) {
   }
 
   for (int i = 0; i < 5; i++) {
-    if (check_action(i, boat_bank, far_bank) && succ->depth +1 <= limit) {
+    if (check_action(i, boat_bank, far_bank) && succ->depth + 1 <= limit) {
       if (take_action(m, succ, i)) {
         succ->children[i]->depth = succ->depth + 1;
         if (compare_states(m->goal, succ->children[i]->s)) {
-          printf("found solution!\n");
+          printf("found solution! %d\n", limit);
           m->found_result = true;
           m->goal_node = succ->children[i];
           m->result = m->states_size - 1;
@@ -181,9 +181,13 @@ void handle_mode (struct monitor *m, const char *mode) {
   else if (strncmp("dfs", mode, strlen(mode)) == 0)
     dfs(m, m->tree_head);
   else if (strncmp("iddfs", mode, strlen(mode)) == 0)
-    for (size_t i = 0; ; i++) {
+    // iddfs(m, m->tree_head, 377);
+    for (int i = 0; !m->found_result; i++) {
       m->tree_head = create_successor();
       m->tree_head->s = m->start;
+      m->start->node = m->tree_head;
+
+      printf("limit: %d\n", i);
 
       if (iddfs(m, m->tree_head, i))
         break;

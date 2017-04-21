@@ -50,6 +50,7 @@ struct successor {
 struct state {
   struct bank *left;
   struct bank *right;
+  struct successor *node;
 };
 
 struct bank {
@@ -83,6 +84,7 @@ struct bank *create_bank () {
 void init_state (struct state *new_state) {
   new_state->left = create_bank();
   new_state->right = create_bank();
+  new_state->node = NULL;
 }
 
 void debug_state (struct state *s) {
@@ -233,7 +235,7 @@ void remove_from_priority_queue (struct monitor *m, struct priority_queue *pq) {
     m->p_queue_head = pq->next;
 
   m->p_queue_size -= 1;
-  printf("removed node: %d\n", m->p_queue_size);
+  // printf("removed node: %d\n", m->p_queue_size);
 }
 
 void init_monitor (struct monitor *new_monitor) {
@@ -274,7 +276,10 @@ int increase_states_cap (struct monitor *m) {
 }
 
 void clear_states (struct monitor *m) {
-  memset(m->states, 0, sizeof(struct state) * m->states_cap);
+  struct state *states;
+  states = malloc(sizeof(struct state) * m->states_cap);
+  memset(states, 0, sizeof(struct state) * m->states_cap);
+  m->states = states;
   m->states_size = 0;
 }
 

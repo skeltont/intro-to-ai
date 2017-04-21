@@ -8,3 +8,14 @@
   * `./hw test_data/start1.txt test_data/goal1.txt dfs output.txt`
 * Clean
   * `make clean`
+
+
+# Results
+_Results are presented as < Path Length / # Nodes expanded >_
+
+| Algorithm | Data Set #1 | Data Set #2 | Data Set #3 |
+| --------- | :---------: | :--------:  | :--------:  |
+| DFS       | 11/13       | 43/54       | 557/558     |
+| BFS       | 11/14       | 33/95       | 337/7318    |
+| IDDFS     | 11/13       | 41/54       | 555/557     |
+| A*        | 11/14       | 33/59       | 337/959     |

@@ -174,6 +174,7 @@ bool take_action (struct monitor *m, struct successor *succ, int action) {
   if (s == NULL) {
     // printf(KYEL "%s" RESET "\n", message);
     succ->children[action]->parent = succ;
+    succ->children[action]->s->node = succ;
 
     if (m->states_size + 1 == m->states_cap)
       m->states_cap = increase_states_cap(m);
@@ -183,6 +184,8 @@ bool take_action (struct monitor *m, struct successor *succ, int action) {
 
     return true;
   } else {
+    if (compare_states(m->goal, s))
+      printf("found result %d\n", succ->depth);
     // printf(KRED "deadend: %s" RESET "\n", message);
     succ->children[action]->s = s;
 
