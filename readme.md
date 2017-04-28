@@ -1,0 +1,8 @@
+- `git clone https://github.com/skeltont/intro-to-ai`
+- `git checkout -b james_branch`
+- make your changes
+- `git add .`
+- `git commit -m "what i did"`
+- `git push origin james_branch`
+- login to github
+- go to repository and click "create pull request"
