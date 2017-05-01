@@ -12,7 +12,7 @@ OthelloBoard::OthelloBoard(int cols, int rows, char p1_symb, char p2_symb) :
 		Board(cols, rows), p1_symbol(p1_symb), p2_symbol(p2_symb) { }
 
 OthelloBoard::OthelloBoard() :
-	Board(0,0), p1_symbol('1'), p2_symbol('2') { }
+	Board(4,4), p1_symbol('X'), p2_symbol('O') { }
 
 OthelloBoard::OthelloBoard(const OthelloBoard& other) :
 		Board(other), p1_symbol(other.p1_symbol), p2_symbol(other.p2_symbol) {

@@ -18,15 +18,17 @@ MinimaxPlayer::~MinimaxPlayer() {
 }
 
 void MinimaxPlayer::get_move(OthelloBoard* b, int& col, int& row) {
-	successor *curr;
+	successor *goal_leaf = NULL, *best_move = NULL;
 
-	head = initialize_successor(*b);
-	curr = head;
+	head = initialize_successor(b, -1, -1);
 
- 	generate_successors(curr, true);
-	printf("got here lololol\n");
-	col = 2;
-	row = 3;
+ 	generate_successors(head, true);
+
+	goal_leaf = find_goal_leaf(head, goal_leaf);
+	best_move = get_best_move_from_goal(head, goal_leaf);
+
+	col = best_move->col;
+	row = best_move->row;
 }
 
 MinimaxPlayer* MinimaxPlayer::clone() {
@@ -34,10 +36,13 @@ MinimaxPlayer* MinimaxPlayer::clone() {
 	return result;
 }
 
-successor *MinimaxPlayer::initialize_successor(OthelloBoard b) {
+successor *MinimaxPlayer::initialize_successor(OthelloBoard *b, int col, int row) {
 	successor *s = new successor;
 
-	s->board = b;
+	s->col = col;
+	s->row = row;
+	s->board = *b;
+	s->value = -9999999;
 
 	return s;
 }
@@ -61,33 +66,44 @@ int MinimaxPlayer::eval(OthelloBoard *b) {
 	return value;
 }
 
-void MinimaxPlayer::generate_successors(successor *node, bool swap) {
+void MinimaxPlayer::generate_successors(successor *node, bool max_player) {
 	int num_cols = node->board.get_num_cols(), num_rows = node->board.get_num_rows();
 	char symbol = this->get_symbol();
-	successor *temp;
+	successor *temp = NULL;
 
-	if(!swap){
+	if(!max_player){
 		symbol = 'X';
 	}
-
-	printf("generating successors\n");
 
 	for (int c = 0; c < num_cols; c++) {
 		for (int r = 0; r < num_rows; r++) {
 			if (node->board.is_legal_move(c, r, symbol)) {
-				temp = initialize_successor(node->board);
+				temp = initialize_successor(&node->board, c, r);
 				temp->board.play_move(c, r, symbol);
+				temp->value = eval(&temp->board);
 				temp->parent = node;
 				node->children.push_back(temp);
-				printf("valid move found \t\t: %d %d\n", c, r);
-				generate_successors(temp, !swap);
-			} else {
-				printf("not valid move found\t\t: %d %d\n", c, r);
+				generate_successors(temp, !max_player);
 			}
 		}
 	}
 }
 
-// void MinimaxPlayer::parse_tree(successor *head) {
-// 	// recursively parse this tree
-// }
+successor *MinimaxPlayer::find_goal_leaf(successor *node, successor *goal_leaf) {
+	if ((node->children.empty()) && (goal_leaf == NULL || node->value > goal_leaf->value)) {
+		goal_leaf = node;
+	} else {
+		for (vector<successor*>::iterator it = node->children.begin(); it < node->children.end(); it++) {
+			goal_leaf = find_goal_leaf(*it, goal_leaf);
+		}
+	}
+
+	return goal_leaf;
+}
+
+successor *MinimaxPlayer::get_best_move_from_goal(successor *head, successor *node) {
+	if (node->parent == head) {
+		return node;
+	}
+	return get_best_move_from_goal(head, node->parent);
+}

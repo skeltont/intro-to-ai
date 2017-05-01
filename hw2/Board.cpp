@@ -103,4 +103,3 @@ void Board::display() const {
 	}
 	std::cout << "\n\n";
 }
-

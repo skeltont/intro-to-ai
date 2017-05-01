@@ -16,6 +16,9 @@ struct successor {
 	successor *parent;
 	std::vector<successor*> children;
 	OthelloBoard board;
+	int col;
+	int row;
+	int value;
 };
 
 /**
@@ -35,7 +38,8 @@ public:
 	 */
 	virtual ~MinimaxPlayer();
 
-	// void parse_tree();
+	successor *find_goal_leaf(successor *head, successor *goal_leaf);
+	successor *get_best_move_from_goal(successor *head, successor *goal);
 
 	/**
 	 * @param b The board object for the current state of the board
@@ -44,9 +48,9 @@ public:
 	 */
     void get_move(OthelloBoard* b, int& col, int& row);
 
-		void generate_successors(successor *node, bool swap);
+		void generate_successors(successor *node, bool max_player);
 
-		successor *initialize_successor(OthelloBoard b);
+		successor *initialize_successor(OthelloBoard *b, int col, int row);
 
     /**
      * @return A copy of the MinimaxPlayer object
