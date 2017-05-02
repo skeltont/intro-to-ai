@@ -18,7 +18,7 @@ struct successor {
 	OthelloBoard board;
 	int col;
 	int row;
-	int value;
+	float value;
 };
 
 /**
@@ -38,9 +38,6 @@ public:
 	 */
 	virtual ~MinimaxPlayer();
 
-	successor *find_goal_leaf(successor *head, successor *goal_leaf);
-	successor *get_best_move_from_goal(successor *head, successor *goal);
-
 	/**
 	 * @param b The board object for the current state of the board
 	 * @param col Holds the return value for the column of the move
@@ -48,9 +45,35 @@ public:
 	 */
     void get_move(OthelloBoard* b, int& col, int& row);
 
-		void generate_successors(successor *node, bool max_player);
+		/*
+		 * @param node is the current node in the successor tree, since the call is recursive
+		 * @param max_player tells the tree level if it's a maximizing or minimizing step
+		 * Description: Build the tree by expanding potential moves (children) at every node.
+		 * This function does the part of building the successor tree and bubbling back the
+		 * minimax values recursively.
+		 */
+		void build_minimax_tree(successor *node, bool max_player);
 
+		/*
+		 * @param b	The board object for the current state of the board
+		 * @param col the column for the move that would create that successor state
+		 * @param row the row for the move that would create that successor state
+		 * Description: Builds the successor object that describes the nodes of the successor tree
+		 */
 		successor *initialize_successor(OthelloBoard *b, int col, int row);
+
+		/*
+		 * @param col column position
+		 * @param row row position
+		 * Description: return if position is a corner cell
+		 */
+		bool is_corner_cell(int col, int row);
+
+		/*
+		 * @param node is a pointer to a specific node in the tree
+		 * Description: evaluate a node's board state for how many coins, number of corners, and available moves.
+		 */
+		float eval(successor *node);
 
     /**
      * @return A copy of the MinimaxPlayer object
@@ -58,8 +81,6 @@ public:
      */
     MinimaxPlayer* clone();
 
-
-		int eval(OthelloBoard *b);
 
 private:
 	successor *head;
