@@ -23,16 +23,12 @@ void MinimaxPlayer::get_move(OthelloBoard* b, int& col, int& row) {
 	head = initialize_successor(b, -1, -1);
 
  	build_minimax_tree(head, true);
-	std::cout << "###############################" << std::endl; // NOTE: debugging
-	std::cout << "potential moves: " << std::endl;							 // NOTE: debugging
 	for (vector<successor*>::iterator it = head->children.begin(); it < head->children.end(); it++) {
-		printf("value: %f\n", (*it)->value);											 // NOTE: debugging
 		(*it)->board.display();
 		if (best_move == NULL || ((*it)->value > best_move->value)) {
 			best_move = *it;
 		}
 	}
-	std::cout << "###############################" << std::endl; // NOTE: debugging
 
 	col = best_move->col;
 	row = best_move->row;
@@ -81,24 +77,27 @@ float MinimaxPlayer::eval(successor *node) {
 				if (node->board.is_legal_move(c,r,min_symbol))
 					min_moves++;
 			} else {
-				coins -= 1;
+				coins--;
 				if (is_corner_cell(c,r))
 					min_corner++;
 			}
 		}
 	}
 
-	// maximize our number of coins
+	/* OTHELLO EVALUATION HEURISTICS IN ORDER FROM LEAST TO MOST IMPORTANCE */
+
+	// maximize our number of coins. coins aren't that important
 	if (empty_count > 0)
-		result += (coins / empty_count) * 50;
+		result += (coins / empty_count) * 1;
 
-	// check for corner control node
+	// check for corner control node. corners are the only for sure safe spot on the table
 	if ((max_corner + min_corner) > 0)
-		result += ((max_corner - min_corner) / (max_corner + min_corner)) * 35;
+		result += ((max_corner - min_corner) / (max_corner + min_corner)) * 100;
 
-	// count how many potential moves they have
+	// count how many potential moves they have. This is very important because more moves
+	// means that the opponent is losing
 	if ((max_moves + min_moves) > 0)
-		result += ((max_moves - min_moves) / (max_moves + min_moves)) * 15;
+		result += ((max_moves - min_moves) / (max_moves + min_moves)) * 1000;
 
 	return result;
 }
@@ -142,6 +141,7 @@ void MinimaxPlayer::build_minimax_tree(successor *node, bool max_player) {
 	if (!node->children.empty()) {
 		for (vector<successor*>::iterator it = node->children.begin(); it < node->children.end(); it++) {
 			if (!first || (max_player && (*it)->value > node->value) || (!max_player && (*it)->value < node->value)) {
+				if (!first) first = true;
 				node->value = (*it)->value;
 			}
 		}
