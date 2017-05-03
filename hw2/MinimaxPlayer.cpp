@@ -24,7 +24,6 @@ void MinimaxPlayer::get_move(OthelloBoard* b, int& col, int& row) {
 
  	build_minimax_tree(head, true);
 	for (vector<successor*>::iterator it = head->children.begin(); it < head->children.end(); it++) {
-		(*it)->board.display();
 		if (best_move == NULL || ((*it)->value > best_move->value)) {
 			best_move = *it;
 		}
