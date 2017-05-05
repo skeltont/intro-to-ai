@@ -1,0 +1,187 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage[fleqn]{amsmath}
+% \usepackage{chngcntr}
+% \usepackage{mathtools}
+
+% \numberwithin{equation}
+
+% set syntax highlighting for listings
+\lstset{language=C}
+\lstset{frame=lrbt,xleftmargin=\fboxsep,xrightmargin=-\fboxsep}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\pagenumbering{gobble} % hide page number on first page
+\singlespacing % set spacing
+\title{Written Assignment \#2}
+
+\author{Ty~Skelton}
+
+% make the title area
+\maketitle
+
+\begin{center}
+\scshape                      % Small caps
+CS331 - Intro to AI \\        % Course
+Spring Term\\[\baselineskip]  % Term
+Oregon State University\par   % Location
+\end{center}
+
+\IEEEpeerreviewmaketitle
+
+\pagenumbering{arabic}
+\newpage
+
+\begin{enumerate}
+  \item (From 7.4 in the book) For each of the following statements, prove if it is true or false.
+  \begin{enumerate}[a)]
+    \item \( (A \land B) \models (A \iff B) \) \\
+
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \( A \) & \( B \) & \( A \land B \) & \( A \iff B \) \\
+      \hline
+      T & T & T & T \\
+      T & F & F & F \\
+      F & T & F & F \\
+      F & F & F & T \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    Since \( (A \iff B) \) is true whenever \( (A \land B) \) is true, then \( (A \land B) \models (A \iff B) \) is therefore true. \\
+
+    \item \( (C \lor (\neg A \land \neg B)) \equiv ((A \rightarrow C) \land (B \rightarrow C)) \) becomes \( (C \lor (\neg A \land \neg B)) \equiv ((\neg A \lor C) \land (\neg B \lor C)) \) \\
+
+    \begin{tabular}{|c|c|c|c|c|}
+      \hline
+      \( A \) & \( B \) & \( C \) & \( C \lor (\neg A \land \neg B) \) & \( (\neg A \lor C) \land (\neg B \lor C) \) \\
+      \hline
+      T & T & T & T & T \\
+      T & T & F & F & F \\
+      T & F & F & F & F \\
+      T & F & T & T & T \\
+      T & F & F & F & F \\
+      F & T & T & T & T \\
+      F & T & F & F & F \\
+      F & F & T & T & T \\
+      F & F & F & T & T \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    Since \( (C \lor (\neg A \land \neg B)) \) has the same truth values as \( ((\neg A \lor C) \land (\neg B \lor C)) \), then \( (C \lor (\neg A \land \neg B)) \equiv ((\neg A \lor C) \land (\neg B \lor C)) \) is therefore true. \\
+
+    \item \( (A \lor B) \land \neg (A \rightarrow B) \) becomes \( (A \lor B) \land (A \land \neg B) \) \\
+
+    \begin{tabular}{|c|c|c|}
+      \hline
+      \( A \) & \( B \) & \(  (A \lor B) \land (A \land \neg B) \)  \\
+      \hline
+      T & T & F \\
+      T & F & T \\
+      F & T & F \\
+      F & F & F \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    Since when \( A \) is true and \( B \) is false \(  (A \lor B) \land (A \land \neg B) \) is evaluated to true, then it is satisfiable.
+
+  \end{enumerate}
+
+  \item (From 7.10 in the book) Decide whether each of the following sentences is valid, unsatisfiable or neither.
+  Verify your decisions using truth tables or the equivalence rules of Figure 7.11.
+  \begin{enumerate}[a)]
+    \item \( Smoke \rightarrow Smoke \) becomes \( \neg Smoke \lor Smoke \) \\
+
+    \begin{tabular}{|c|c|}
+      \hline
+      \( Smoke \) & \( \neg Smoke \lor Smoke \)  \\
+      \hline
+      T & T \\
+      F & T \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    This statement is satisfiable and valid as shown in the truth table for \( Smoke \) above. \\
+
+    \item \( (Smoke \rightarrow Fire) \rightarrow (\neg Smoke \rightarrow \neg Fire) \) becomes \( (Smoke \land \neg Fire) \lor (Smoke \lor \neg Fire) \) \\
+
+    \begin{tabular}{|c|c|c|}
+      \hline
+      \( Smoke \) & \( Fire \) & \( (Smoke \land \neg Fire) \lor (Smoke \lor \neg Fire) \)  \\
+      \hline
+      T & T & T \\
+      T & F & T \\
+      F & T & F \\
+      F & F & T \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    This statement is satisfiable and valid as shown in the truth table for \( Smoke \) and \( Fire \) above. \\
+
+    \newpage % readability
+
+    \item \( (Smoke \rightarrow Fire) \rightarrow ((Smoke \land Heat) \rightarrow Fire) \) becomes \( (Smoke \land \neg Fire) \lor ((\neg Smoke \lor \neg Heat) \lor Fire) \)
+
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      \( Smoke \) & \( Fire \) & \( Heat \) & \( (Smoke \land \neg Fire) \lor ((\neg Smoke \lor \neg Heat) \lor Fire) \) \\
+      \hline
+      T & T & T & T \\
+      T & T & F & T \\
+      T & F & F & T \\
+      T & F & T & T \\
+      T & F & F & T \\
+      F & T & T & T \\
+      F & T & F & T \\
+      F & F & T & T \\
+      F & F & F & T \\
+      \hline
+    \end{tabular} \medskip % readability
+
+  \end{enumerate}
+
+
+  \item  (Exercise 7.2 in the book which was adapted from Barwise and Etchemendy (1993)).
+  If a unicorn is mythical, then it is immortal, but if it is not mythical, then it is a mortal mammal.
+  If the unicorn is either immortal or a mammal, then it is horned.
+  The unicorn is magical if it is horned.
+  \begin{enumerate}[a)]
+    \item Knowledge Base:
+    \begin{align}
+      Mythical &\rightarrow Immortal \\
+      \neg Mythical &\rightarrow (\neg Immortal \land Mammal) \\
+      (Immortal \lor Mammal) &\rightarrow Horned \\
+      Horned &\rightarrow Magical
+    \end{align}
+
+    \begin{align}
+      \neg Mythical &\lor Immortal &[1, logical \; equiv.] \\
+      Mythical &\lor (\neg Immortal \land Mammal) &[2, logical \; equiv.] \\
+      (\neg Immortal \land \neg Mammal) &\lor Horned &[3, logical \; equiv.] \\
+      \neg Horned &\lor Magical &[4, logical \; equiv.] \\
+      (\neg Immortal \land \neg Mammal) &\lor Magical &[7,8, res. \; rule] \\
+      Immortal &\lor (\neg Immortal \land Mammal) &[5,6, res. \; rule] \\
+      Immortal &\lor Mammal &[10, dist.] \\
+      Magical& &[11, 9, res. \; rule] \\
+      Horned& &[7, 11, res. \; rule]
+    \end{align}
+
+    \item Mythical? : No, Cannot be shown.
+
+    \item Magical? : Yes, Shown above.
+
+    \item Horned? : Yes, Shown above.
+  \end{enumerate}
+
+\end{enumerate}
+
+\end{document}
