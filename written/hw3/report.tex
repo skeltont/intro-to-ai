@@ -1,0 +1,143 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage[fleqn]{amsmath}
+% \usepackage{chngcntr}
+% \usepackage{mathtools}
+
+% \numberwithin{equation}
+
+% set syntax highlighting for listings
+\lstset{language=C}
+\lstset{frame=lrbt,xleftmargin=\fboxsep,xrightmargin=-\fboxsep}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\pagenumbering{gobble} % hide page number on first page
+\singlespacing % set spacing
+\title{Written Assignment \#3}
+
+\author{Ty~Skelton}
+
+% make the title area
+\maketitle
+
+\begin{center}
+\scshape                      % Small caps
+CS331 - Intro to AI \\        % Course
+Spring Term\\[\baselineskip]  % Term
+Oregon State University\par   % Location
+\end{center}
+
+\IEEEpeerreviewmaketitle
+
+\newpage
+\pagenumbering{arabic}
+
+\begin{enumerate}
+  \item Probability Distributions
+  \begin{enumerate}[a)]
+    \item \( \textbf{P}(Toothache) \)\\
+
+    \begin{tabular}{|c|c|}
+      \hline
+      \( Toothache \) & \( \textbf{P}(Toothache) \) \\
+      \hline
+      False & \( 0.576 + 0.144 + 0.008 + 0.072 = \textbf{0.8} \) \\
+      True  & \( 0.064 + 0.016 + 0.012 + 0.108 = \textbf{0.2} \) \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    \item \( \textbf{P}(Cavity) \) \\
+
+    \begin{tabular}{|c|c|}
+      \hline
+      \( Toothache \) & \( \textbf{P}(Toothache) \) \\
+      \hline
+      False & \( 0.576 + 0.144 + 0.064 + 0.016 = \textbf{0.8} \) \\
+      True  & \( 0.008 + 0.072 + 0.012 + 0.108 = \textbf{0.2} \) \\
+      \hline
+    \end{tabular} \medskip % readability
+
+    \item \( \textbf{P}(Toothache | Cavity) \) \\
+
+    \begin{tabular}{|c|c|c|}
+      \hline
+      \( Toothache \) & \( Cavity \) & \( \textbf{P}(Toothache | Cavity) \) \\
+      \hline
+      True  & True  & \( (0.012 + 0.108)/0.2 = \textbf{0.6} \) \\
+      True  & False & \( (0.064 + 0.016)/0.8 = \textbf{0.1} \) \\
+      False & True  & \( (0.008 + 0.072)/0.2 = \textbf{0.4} \) \\
+      False & False & \( (0.576 + 0.144)/0.8 = \textbf{0.9} \) \\
+      \hline
+    \end{tabular} \medskip % readability
+  \end{enumerate}
+
+  \item Show Equivalence
+  \begin{align*}
+    P(X,Y) &= P(X)P(Y): \\
+           &= P(X|Y)P(Y) & [Chain rule] \\
+           &= (\frac{P(X \land Y)}{P(Y)})P (Y) & [Kolmogorov \; def] \\
+           &= (\frac{P(X)P(Y)}{P(Y)})P(Y) & [mult. \; rule \; when \; indep.] \\
+           &= P(X)P(Y)& [division] & \qed \\ \\
+    P(X|Y) &= P(X): \\
+    P(X|Y) &= \frac{P(X \land Y)}{P(Y)} & [Kolmogorov \; def] \\
+           &= \frac{P(X)P(Y)}{P(Y)} & [mult. \; rule \; when \; indep.] \\
+           &= P(X) & [division] & \qed \\ \\
+    P(Y|X) &= P(Y): \\
+    P(Y|X) &= \frac{P(Y \land X)}{P(X)} & [Kolmogorov \; def] \\
+           &= \frac{P(Y)P(X)}{P(X)} & [mult. \; rule \; when \; indep.] \\
+           &= P(Y) & [division] & \qed \\
+  \end{align*}
+
+  \newpage % readability
+
+  \item Suppose you are given a coin that lands heads with probability x and tails with probability (1-x).
+  \begin{enumerate}[a)]
+    \item \textit{Are the outcomes of successive flips of the coin independent of each other given that you know the value of x?} \\ \\
+    Regardless of knowing probabilty \( x \) the outcomes of previous coin flips have no effect on the next.
+
+    \item \textit{Are the outcomes of successive flips of the coin independent of each other if you do not know the value of x?} \\ \\
+    Like part a, whether or not you know the probability of the coin flip's outcome the successive flips would have no effect on any other.
+    Knowing or not knowing doesn't change the probability of an event that is observed.  \\
+  \end{enumerate}
+
+  \item After your yearly checkup, the doctor has bad news and good news. \\ \\
+  It's good news, because even though the test is highly accurate the probability of having the disease is quite low.
+  The actual probability of having the disease given testing positive is:
+  \begin{align*}
+    P(Have \; | \; Pos) &= \frac{P(Pos \; | \; Have)P(Have)}{P(Pos)} \\
+    &= \frac{P(Pos \; | \; Have)P(Have)}{P(Pos \; | \; Have)P(Have) + P(Pos \; | \; Doesn't \; Have)P(Doesn't \; Have)} \\
+    &= \frac{(0.99*0.0001)}{(0.99*0.0001)+(0.01*0.9999)} \\
+    &= \frac{0.000099}{0.000099+0.009999} \\
+    &\approx 0.0098 \\
+    &\approx 0.98\% \\
+  \end{align*}
+
+  \item Suppose you are witness to a nighttime hit-and-run accident involving a taxi in Athens.
+
+  \begin{enumerate}[a)]
+    \item It is not possible to calculate the most likely color of the taxi without more information.
+    In order to get this probability we'd need to know the number of blue and green taxis in the city.
+    \item Now that we know 9 out of 10 taxis in Athens are green we can calculate the most likely color.
+    \begin{align*}
+      P(Blue \; | \; Saw \; Blue) &= \frac{P(Saw \; Blue \; | \; Blue)P(Blue)}{P(Saw \; Blue)} \\
+      &= \frac{P(Saw \; Blue \; | \; Blue)P(Blue)}{P(Saw \; Blue \; | \; Blue)P(Blue)+P(Saw \; Blue \; | \; Green)P(Green)} \\
+      &= \frac{0.75*0.1}{(0.75*0.1)+(0.25*0.9)} \\
+      &= 0.25
+    \end{align*}
+
+    Since the probability you saw blue and the car was actually blue is only 0.25, it's most likely that you saw blue and the car was actually green!
+
+  \end{enumerate}
+
+\end{enumerate}
+
+\end{document}
