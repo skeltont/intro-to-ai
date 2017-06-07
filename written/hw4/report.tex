@@ -1,0 +1,104 @@
+\documentclass[10pt,draftclsnofoot,onecolumn]{IEEEtran}
+
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{enumerate}
+\usepackage{amsthm}
+\usepackage[fleqn]{amsmath}
+% \usepackage{chngcntr}
+% \usepackage{mathtools}
+
+% \numberwithin{equation}
+
+% set syntax highlighting for listings
+\lstset{language=C}
+\lstset{frame=lrbt,xleftmargin=\fboxsep,xrightmargin=-\fboxsep}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\pagenumbering{gobble} % hide page number on first page
+\singlespacing % set spacing
+\title{Written Assignment \#4}
+
+\author{Ty~Skelton}
+
+% make the title area
+\maketitle
+
+\begin{center}
+\scshape                      % Small caps
+CS331 - Intro to AI \\        % Course
+Spring Term\\[\baselineskip]  % Term
+Oregon State University\par   % Location
+\end{center}
+
+\IEEEpeerreviewmaketitle
+
+\newpage
+\pagenumbering{arabic}
+
+\begin{enumerate}
+  \item Bayesian network D-Separation
+  \begin{enumerate}[a)]
+    \item $ I(B,C \; | \; {A,G}) $ \\
+    False (Not-blocked) \\
+    \item $ I(C,D \; | \; H) $ \\
+    False (Not-blocked) \\
+    \item $ I(G,H \; | \; F) $ \\
+    True (Blocked) \\
+    \item $ I(A,H \; | \; F) $ \\
+    True (Blocked) \\
+    \item $ I(E,D \; | \; C) $ \\
+    False (Not-blocked) \\
+  \end{enumerate}
+
+  \item Bayesian network probabilities
+  \begin{enumerate}[a)]
+    \item $ P(A=T, B=T, C=F, D=T, E=T) $
+    \begin{align*}
+      &= P(A=T)P(B=T|A=T)P(C=F|A=T)P(D=T|C=F)P(E=T|B=T,D=T) \\
+      &= (0.6)(0.75)(0.8)(0.25)(0.6) \\
+      &= 0.054 \\
+    \end{align*}
+
+    \item $ P(A=T, B=T, D=F) $
+    \begin{align*}
+      &= \sum_{c} \sum_{e} P(A=T, B=T, C=c, D=F, E=e) \\
+      &= \sum_{c} \sum_{e} P(A=T)P(B=T|A=T)P(C=c|A=T)P(D=F|C=c)P(E=e|B=T,D=F) \\
+      &= P(A=T)P(B=T|A=T) \sum_{c} P(C=c|A=T)P(D=F|C=c) \sum_{e} P(E=e|B=T,D=F) \\
+      &= P(A=T)P(B=T|A=T) \sum_{c} P(C=c|A=T)P(D=F|C=c) \\
+      &= (0.6)(0.75)[(0.2)(0.9) + (0.8)(0.75)] \\
+      &= (0.6)(0.75)[0.18 + 0.6] \\
+      &= (0.6)(0.75)[0.18 + 0.6] \\
+      &= 0.351 \\
+    \end{align*}
+
+    \item $ P(D=T | A=F) $
+    \begin{align*}
+      &= \frac{P(D=T,A=F)}{P(A=F)} \\
+      &= \frac{\sum_{b} \sum_{c} \sum_{e} P(A=F,B=b,C=c,D=T,E=e)}
+              {\sum_{b} \sum_{c} \sum_{d} \sum_{e} P(A=F,B=b,C=c,D=d,E=e)} \\
+      &= \frac{\sum_{b} \sum_{c} \sum_{e} P(A=F)P(B=b|A=F)P(C=c|A=F)P(D=T|C=c)P(E=e|B=b,D=T)}
+              {\sum_{b} \sum_{c} \sum_{d} \sum_{e} P(A=F)P(B=b|A=F)P(C=c|A=F)P(D=d|C=c)P(E=e|B=b,D=d)} \\
+      &= \frac{P(A=F) \sum_{b} P(B=b|A=F) \sum_{c} P(C=c|A=F)P(D=T|C=c) \sum_{e} P(E=e|B=b,D=T)}
+              {P(A=F) \sum_{b} P(B=b|A=F) \sum_{c} P(C=c|A=F) \sum_{d} P(D=d|C=c) \sum_{e} P(E=e|B=b,D=d)} \\
+      &= \frac{P(A=F) \sum_{c} P(C=c|A=F)P(D=T|C=c)}
+              {P(A=F)} \\
+      &= \frac{(0.4)[(0.75)(0.1)+(0.25)(0.25)]}
+              {(0.4)} \\
+      &= \frac{(0.4)(0.075 + 0.0625)}{0.4} \\
+      &= 0.1375 \\
+      % i think i figured something out here
+      % &= \frac{P(A=F) \sum_{b} P(B=b|A=F) \sum_{c} P(C=c|A=F)P(D=T|C=c)}
+      %         {P(A=F) \sum_{b} P(B=b|A=F) \sum_{c} P(C=c|A=F) \sum_{d} P(D=d|C=c)} \\
+      % &= \frac{(0.4)[0.1[(0.75)(0.1)+(0.25)(0.25)] + 0.9[(0.75)(0.1) + (0.25)(0.25)]]}
+      %         {}
+    \end{align*}
+  \end{enumerate}
+\end{enumerate}
+
+\end{document}
