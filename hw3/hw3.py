@@ -19,9 +19,9 @@ def parse_training_data():
                 vocab.append(word)
     return sorted(vocab)
 
-def build_feature_data(vocab):
+def build_feature_data(filename, vocab):
     feature = []
-    f = open("trainingSet.txt", 'r')
+    f = open(filename, 'r')
     lines = f.readlines()
     f.close()
 
@@ -72,12 +72,36 @@ def get_word_count(index, feature, c_var = None):
 
     return count
 
-def run_test(vocab, feature, prob_c):
+def output_preprocessed_data(filename, vocab, featurized):
+    if (filename == "trainingSet.txt"):
+        f = open("preprocessed_train.txt", 'w')
+    else:
+        f = open("preprocessed_test.txt", 'w')
+
+    vocab_row = ",".join(vocab)
+    vocab_row = vocab_row + ", classlabel"
+    f.write(vocab_row)
+
+    for feat in featurized:
+        line = ",".join(map(str,feat))
+        f.write(line)
+    f.close()
+
+def report_results(results):
+    f = open("results.txt", 'w')
+    for l,r in results.iteritems():
+        line = l + ": " + str(r) + "\n"
+        f.write(line)
+    f.close()
+
+def run_test(filename, vocab, feature, prob_c):
     pred_correct = 0
     pred_count = 0
 
+    featurized = build_feature_data(filename, vocab)
+    output_preprocessed_data(filename, vocab, featurized)
 
-    f = open("testSet.txt", 'r')
+    f = open(filename, 'r')
     lines = f.readlines()
     f.close()
 
@@ -126,18 +150,18 @@ def run_test(vocab, feature, prob_c):
             if int(classlabel) == 0:
                 pred_correct += 1
 
-    print "results: "
-    print str(pred_correct) +","+ str(pred_count)
-    print float(pred_correct) / float(pred_count)
-
+    return float(pred_correct) / float(pred_count)
 
 def main():
     vocab = parse_training_data()
-    feature = build_feature_data(vocab)
+    feature = build_feature_data("trainingSet.txt", vocab)
     prob_c = get_prob_c(feature)
-    print prob_c
-    run_test(vocab, feature, prob_c)
-
+    training_accuracy = run_test("trainingSet.txt", vocab, feature, prob_c)
+    test_accuracy = run_test("testSet.txt", vocab, feature, prob_c)
+    report_results({
+        "test_data_accuracy": test_accuracy,
+        "train_data_accuracy": training_accuracy
+    })
 
 if __name__ == "__main__":
     main()
